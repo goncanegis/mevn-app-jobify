@@ -1,0 +1,46 @@
+{
+  "name": "jobify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "setup-project": "pnpm i && cd client && pnpm i",
+    "server": "nodemon server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "cloudinary": "^2.4.0",
+    "concurrently": "8.0.1",
+    "connect-mongo": "^5.1.0",
+    "cookie-parser": "1.4.6",
+    "cors": "^2.8.5",
+    "datauri": "^4.1.0",
+    "dayjs": "1.11.7",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "express-async-errors": "3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "express-validator": "7.0.1",
+    "helmet": "^7.1.0",
+    "http-status-codes": "2.2.0",
+    "jsonwebtoken": "9.0.0",
+    "mongoose": "7.0.5",
+    "morgan": "1.10.0",
+    "multer": "1.4.5-lts.1",
+    "nanoid": "4.0.2",
+    "nodemon": "2.0.22"
+  },
+  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903",
+  "devDependencies": {
+    "@types/echarts": "^4.9.22",
+    "pre-commit": "^1.2.2"
+  }
+}
