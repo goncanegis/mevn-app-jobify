@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { z } from "zod";
-import type { FormSubmitEvent } from "#ui/types";
 import { apiService } from "~/utils/custom-fetch";
 
 const router = useRouter();
@@ -15,8 +14,6 @@ const schema = z.object({
   password: z.string().min(8, "Must be at least 8 characters"),
 });
 
-type Schema = z.output<typeof schema>;
-
 const state = reactive({
   name: "",
   lastName: "",
@@ -25,22 +22,22 @@ const state = reactive({
   password: "",
 });
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit() {
   loading.value = true;
 
-  const { data, error } = await apiService.post("/auth/register", state, {
+  await apiService.post("/auth/register", state, {
     onSuccess: () => {
       router.push("/login");
     },
-    onFinally: () => {
-      loading.value = false;
+    onError: (error) => {
+      showToast({
+        title: error.message || "Error creating account",
+        type: "error",
+      });
     },
   });
 
-  if (error) {
-    showToast({ title: error.message, type: "error" });
-    return;
-  }
+  loading.value = false;
 }
 
 onMounted(() => {

@@ -14,13 +14,6 @@ interface RequestOptions {
   isFormData?: boolean;
 }
 
-interface ApiResponse<T = any> {
-  loading: boolean;
-  status?: number;
-  data?: T;
-  error?: string;
-}
-
 export const setToken = (token: string) => {
   sessionStorage.setItem("token", token);
 };
@@ -62,83 +55,77 @@ class ApiService {
     options?: RequestOptions
   ): Promise<{ data?: T; error?: string; loading: boolean }> {
     let loading = true;
-    try {
-      const controller = new AbortController();
-      const signal = controller.signal;
-      const config = useRuntimeConfig();
+    let data: T | undefined = undefined;
+    let error: string | undefined = undefined;
 
-      const queryString =
-        options?.method === "GET" || !options?.method
-          ? options?.query
-            ? _queryBuilder(options.query)
-            : ""
-          : "";
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const config = useRuntimeConfig();
 
-      const url = path.startsWith("http")
-        ? path
-        : config.public.apiBaseurl + path + queryString;
+    const queryString =
+      options?.method === "GET" || !options?.method
+        ? options?.query
+          ? _queryBuilder(options.query)
+          : ""
+        : "";
 
-      const headers = JSON.parse(JSON.stringify(buildHeaders()));
+    const url = path.startsWith("http")
+      ? path
+      : config.public.apiBaseurl + path + queryString;
 
-      const fetchOptions: RequestInit = {
-        method: options?.method || "GET",
-        headers,
-        signal,
-      };
+    const headers = JSON.parse(JSON.stringify(buildHeaders()));
 
-      if (options?.isFormData) {
-        delete fetchOptions.headers["Content-Type"];
+    const fetchOptions: RequestInit = {
+      method: options?.method || "GET",
+      headers,
+      signal,
+    };
+
+    if (options?.isFormData) {
+      delete fetchOptions.headers["Content-Type"];
+    }
+
+    if (options?.method && options.method !== "GET" && options.body) {
+      fetchOptions.body = options.isFormData
+        ? options.body
+        : typeof options.body === "string"
+        ? options.body
+        : JSON.stringify(options.body);
+    }
+
+    const response = await fetch(url, fetchOptions);
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        sessionStorage.removeItem("token");
       }
-
-      if (options?.method && options.method !== "GET" && options.body) {
-        fetchOptions.body = options.isFormData
-          ? options.body
-          : typeof options.body === "string"
-          ? options.body
-          : JSON.stringify(options.body);
-      }
-
-      const response = await fetch(url, fetchOptions);
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          sessionStorage.removeItem("token");
-          return { error: "Unauthorized", loading };
-        }
-
-        const errorData = await response.json();
-
-        return { error: errorData, loading };
-      }
-
-      const data = await response.json();
-      loading = false;
-
+      const errorData = await response.json();
+      error = errorData;
+    } else {
+      data = await response.json();
       if (options?.onSuccess) {
         options.onSuccess(data);
       }
-
       if (options?.successMessage) {
         showToast({ title: options.successMessage, type: "success" });
       }
-
-      return { data, loading };
-    } catch (error: any) {
-      if (options?.onError) {
-        options.onError(error);
-      }
-
-      if (options?.errorMessage) {
-        showToast({ title: options.errorMessage, type: "error" });
-      }
-
-      loading = false;
-      return { error: error || "An error occurred", loading };
-    } finally {
-      if (options?.onFinally) {
-        options.onFinally();
-      }
     }
+
+    loading = false;
+
+    if (error && options?.onError) {
+      options.onError(error);
+    }
+
+    if (error && options?.errorMessage) {
+      showToast({ title: options.errorMessage, type: "error" });
+    }
+
+    if (options?.onFinally) {
+      options.onFinally();
+    }
+
+    return { data, error, loading };
   }
 
   public get<T = any>(
@@ -203,6 +190,43 @@ class ApiService {
     options?: Omit<RequestOptions, "method" | "body">
   ): Promise<{ data?: T; error?: string; loading: boolean }> {
     return this.request(path, { ...options, method: "DELETE" });
+  }
+
+  public async exec<T = any>(
+    fn: (body?: any) => Promise<T>,
+    options?: RequestOptions,
+    body?: any
+  ): Promise<{ data?: T; error?: string; loading: boolean }> {
+    let loading = true;
+    try {
+      const data = await fn(body);
+      loading = false;
+
+      if (options?.onSuccess) {
+        options.onSuccess(data);
+      }
+
+      if (options?.successMessage) {
+        showToast({ title: options.successMessage, type: "success" });
+      }
+
+      return { data, loading };
+    } catch (error: any) {
+      if (options?.onError) {
+        options.onError(error);
+      }
+
+      if (options?.errorMessage) {
+        showToast({ title: options.errorMessage, type: "error" });
+      }
+
+      loading = false;
+      return { error: error || "An error occurred", loading };
+    } finally {
+      if (options?.onFinally) {
+        options.onFinally();
+      }
+    }
   }
 }
 

@@ -90,11 +90,9 @@ onBeforeMount(() => {
 const request = async (data) => {
   isUpdating.value = true;
   await apiService.patchFormData("/users/update-user", data, {
-    onError: () => {
-      showToast({ title: "Failed to update profile", type: "error" });
-    },
+    successMessage: "Profile updated successfully",
+    errorMessage: "Failed to update profile",
     onSuccess: () => {
-      showToast({ title: "Profile updated successfully", type: "success" });
       fetchCurrentUser();
     },
   });

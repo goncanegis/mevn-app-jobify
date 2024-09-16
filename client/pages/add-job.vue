@@ -49,6 +49,7 @@ async function onSubmit() {
       console.log(error);
     },
     successMessage: "Job created successfully",
+    errorMessage: "Failed to create job",
   });
 
   loading.value = false;

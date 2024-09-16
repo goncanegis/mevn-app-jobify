@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { z } from "zod";
 import type { FormSubmitEvent } from "#ui/types";
-import { setToken } from "~/utils/custom-fetch";
-import { apiService } from "~/utils/custom-fetch";
+import { setToken, apiService } from "~/utils/custom-fetch";
 
 const router = useRouter();
 
@@ -22,20 +21,20 @@ const state = reactive({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   loading.value = true;
-  const { data, error } = await apiService.post("/auth/login", state, {
+  await apiService.post("/auth/login", state, {
+    // errorMessage: "Failed to login",
+    onSuccess: (data) => {
+      setToken(data.token);
+      router.push("/add-job");
+    },
     onFinally: () => {
       loading.value = false;
     },
+    onError: (error) => {
+      console.log(error);
+      showToast({ title: error.message, type: "error" });
+    },
   });
-
-  if (error) {
-    showToast({ title: error, type: "error" });
-    return;
-  }
-
-  setToken(data.token);
-
-  router.push("/add-job");
 }
 
 onMounted(() => {
