@@ -13,7 +13,7 @@ const { toggleSidebar } = useDashboardStore();
       />
 
       <div>
-        <Logo />
+        <NuxtLink to="/"><Logo /></NuxtLink>
         <h4 class="logo-text">dashboard</h4>
       </div>
       <div class="btn-container">

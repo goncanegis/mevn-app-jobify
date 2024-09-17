@@ -86,7 +86,9 @@ onMounted(() => {
       </fieldset>
     </UForm>
 
-    <ULink to="/login" class="mt-4"> Login </ULink>
+    <ULink to="/login" class="mt-4"
+      >Already have an account? Login <u>here</u></ULink
+    >
   </UContainer>
 </template>
 

@@ -73,7 +73,7 @@ onMounted(() => {
     </UForm>
 
     <ULink to="/register" class="mt-4">
-      Don't have an account yet? Register here
+      Don't have an account yet? Register <u>here</u>
     </ULink>
   </UContainer>
 </template>

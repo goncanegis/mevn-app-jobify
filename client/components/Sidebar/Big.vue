@@ -11,7 +11,7 @@ const { showSidebar } = storeToRefs(useDashboardStore());
     >
       <div class="content">
         <header>
-          <Logo />
+          <NuxtLink to="/"><Logo /></NuxtLink>
         </header>
         <NavLinks is-big-sidebar />
       </div>

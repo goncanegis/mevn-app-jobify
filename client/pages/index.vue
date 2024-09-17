@@ -4,7 +4,7 @@ import main from "~/assets/images/main.svg?inline";
 
 <template>
   <section>
-    <div class="container page">
+    <div class="page">
       <div class="info">
         <h1>job <span>tracking</span> app</h1>
         <p>
@@ -32,13 +32,26 @@ nav {
   align-items: center;
 }
 .page {
+  padding: 2rem 4rem;
   min-height: calc(100vh - var(--nav-height));
   display: grid;
   align-items: center;
-  margin-top: -3rem;
+  background-color: hsla(0, 100%, 50%, 1);
+  background-image: radial-gradient(
+      at 40% 20%,
+      hsla(28, 100%, 74%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 1) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, hsla(340, 100%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(22, 100%, 77%, 1) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, hsla(242, 100%, 70%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, hsla(343, 100%, 76%, 1) 0px, transparent 50%);
 }
 h1 {
   font-weight: 700;
+  color: black;
   span {
     color: var(--primary-500);
   }
@@ -46,7 +59,7 @@ h1 {
 }
 p {
   line-height: 2;
-  color: var(--text-secondary-color);
+  color: black;
   margin-bottom: 1.5rem;
   max-width: 35em;
 }
@@ -63,6 +76,7 @@ p {
   .page {
     grid-template-columns: 1fr 400px;
     column-gap: 3rem;
+    padding: 4rem 16rem;
   }
   .main-img {
     display: block;

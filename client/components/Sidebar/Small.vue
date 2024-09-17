@@ -15,7 +15,7 @@ const { showSidebar } = storeToRefs(useDashboardStore());
           <UIcon name="i-material-symbols:close-rounded" class="w-5 h-5" />
         </button>
         <header>
-          <Logo />
+          <NuxtLink to="/"><Logo /></NuxtLink>
         </header>
         <NavLinks />
       </div>
